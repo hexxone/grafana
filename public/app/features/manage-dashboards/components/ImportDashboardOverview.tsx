@@ -40,6 +40,18 @@ interface State {
   uidReset: boolean;
 }
 
+function extractDefaultDataSources(dashboard: any): any[] {
+  if (!dashboard.templating || !Array.isArray(dashboard.templating.list)) {
+    return [];
+  }
+
+  const variables = dashboard.templating.list.filter((v: any) => v.type === 'datasource');
+  return variables.length === 1
+    ? [{ uid: `\${${variables[0].name}}` }]
+    : variables.map((v: any) => ({ uid: `\${${v.name}}` }));
+}
+
+
 class ImportDashboardOverviewUnConnected extends PureComponent<Props, State> {
   state: State = {
     uidReset: false,
@@ -99,7 +111,13 @@ class ImportDashboardOverviewUnConnected extends PureComponent<Props, State> {
         )}
         <Form
           onSubmit={this.onSubmit}
-          defaultValues={{ ...dashboard, constants: [], dataSources: [], elements: [], folder: folder }}
+          defaultValues={{
+            ...dashboard,
+            constants: [],
+            dataSources: extractDefaultDataSources(dashboard),
+            elements: [],
+            folder: folder,
+          }}
           validateOnMount
           validateFieldsOnMount={['title', 'uid']}
           validateOn="onChange"

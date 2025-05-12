@@ -165,7 +165,7 @@ export function processV2Datasources(dashboard: DashboardV2Spec): ThunkResult<vo
     let inputs: Record<string, DataSourceInput> = {};
     for (const element of Object.values(elements)) {
       if (element.kind !== 'Panel') {
-        throw new Error('Only panels are currenlty supported in v2 dashboards');
+        throw new Error('Only panels are currently supported in v2 dashboards');
       }
       if (element.spec.data.spec.queries.length > 0) {
         for (const query of element.spec.data.spec.queries) {
